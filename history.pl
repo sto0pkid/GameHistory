@@ -66,3 +66,4 @@ assert(kb_clause(rule("foo(1,6)",foo(1,6)))).
 assert(kb_clause(rule("foo(1,7)",foo(1,7)))).
 assert(kb_clause(rule("trying_to_commit",trying_to_commit))).
 assert(kb_clause(rule("trying_to_commit_again",trying_to_commit_again))).
+retract(kb_clause(rule("trying_to_commit_again",trying_to_commit_again))).
