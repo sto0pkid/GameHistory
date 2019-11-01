@@ -1,5 +1,5 @@
 created(1572028872.8950489).
-assert(kb_clause(io(Input,Output) :- (goal(get_http_request(Input,Request)), goal(process_request(Request,Output_JSON)), goal(http_json(Output_JSON,Output))))).
+assert(kb_clause(io(Input,Output) :- (goal(get_http_request(Input,Request)), goal(process_request(Request,Output_JSON)), goal(http_json(Output_JSON,Output)), git_commit))).
 assert(kb_clause(process_request(request(Request),_{results:Result_List}) :- (goal(is_valid(Request)), findall(Result, (goal(mi(Request)), format(string(Result),"~w",[Request])), Result_List)))).
 assert(kb_clause(process_request(get_rules,_{rules:Rules}) :- (findall(Rule_String, (kb_clause(Rule), format(string(Rule_String), "~w", [Rule])), Rules)))).
 assert(kb_clause(process_request(get_internal_rules,_{rules:Rules}) :- (findall(Rule, kb_clause(rule(Rule,_)), Rules)))).
