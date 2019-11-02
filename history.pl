@@ -1,6 +1,6 @@
 created(1572028872.8950489).
-assert(kb_clause(io(Input,Output) :- (goal(get_http_request(Input,Request)), goal(process_request(Request,Output_JSON)), goal(http_json(Output_JSON,Output)), git_commit))).
-assert(kb_clause(process_request(request(Request),_{results:Result_List}) :- (goal(is_valid(Request)), findall(Result, (goal(mi(Request)), format(string(Result),"~w",[Request])), Result_List)))).
+assert(kb_clause(io(Input,Output) :- (goal(get_http_request(Input,Request)), goal(process_request(Request,Output_JSON)), goal(http_json(Output_JSON,Output))))).
+assert(kb_clause(process_request(request(Request),_{results:Result_List}) :- (goal(is_valid(Request)), findall(Result, (goal(mi(Request)), format(string(Result),"~w",[Request])), Result_List), goal(safe_commit)))).
 assert(kb_clause(process_request(get_rules,_{rules:Rules}) :- (findall(Rule_String, (kb_clause(Rule), format(string(Rule_String), "~w", [Rule])), Rules)))).
 assert(kb_clause(process_request(get_internal_rules,_{rules:Rules}) :- (findall(Rule, kb_clause(rule(Rule,_)), Rules)))).
 assert(kb_clause(id(X,X))).
@@ -13,12 +13,14 @@ assert(kb_clause(get_http_request(Request,Output) :- (goal(member(search(Options
 assert(kb_clause(peer(8.8.8.8))).
 assert(kb_clause(mi(true))).
 assert(kb_clause(mi((A,B)) :- (goal(mi(A)), goal(mi(B))))).
-assert(kb_clause(mi(assert(Rule_String)) :- (term_string(Rule, Rule_String), assert(rule(Rule_String,Rule))))).
-assert(kb_clause(mi(retract(Rule_String)) :- retract(rule(Rule_String,_)))).
-assert(kb_clause(mi(retractall(Rule_String)) :- (kb_clause(rule(Rule_String, Rule)), term_string(Rule_Found, Rule_String), subsumes_term(Rule,Rule_Found), retract(rule(Rule_String,Rule))))).
+assert(kb_clause(mi(assert(Rule_String)) :- (term_string(Rule, Rule_String), assert(rule(Rule_String,Rule)), assert(rules_changed)))).
+assert(kb_clause(mi(retract(Rule_String)) :- (retract(rule(Rule_String,_)), assert(rules_changed)))).
+assert(kb_clause(mi(retractall(Rule_String)) :- (kb_clause(rule(Rule_String, Rule)), term_string(Rule_Found, Rule_String), subsumes_term(Rule,Rule_Found), retract(rule(Rule_String,Rule)), assert(rules_changed)))).
 assert(kb_clause(mi(goal(Head)) :- (kb_clause(rule(_,Head :- Body)), goal(mi(Body))))).
 assert(kb_clause(mi(goal(Fact)) :- (kb_clause(rule(_,Fact))))).
 assert(kb_clause(mi(meta(Goal)) :- Goal)).
+assert(kb_clause(safe_commit :- (goal(rules_changed), git_commit, retract(rules_changed)))).
+assert(kb_clause(safe_commit :- (goal(naf(goal(rules_changed)))))).
 assert(kb_clause(rule("foo(Bar,Baz)",foo(_,_)))).
 assert(kb_clause(rule("foo(1,2)",foo(1,2)))).
 assert(kb_clause(rule("foo(2,3)",foo(2,3)))).
@@ -67,3 +69,17 @@ assert(kb_clause(rule("foo(1,7)",foo(1,7)))).
 assert(kb_clause(rule("trying_to_commit",trying_to_commit))).
 assert(kb_clause(rule("trying_to_commit_again",trying_to_commit_again))).
 retract(kb_clause(rule("trying_to_commit_again",trying_to_commit_again))).
+assert(kb_clause(rule("foo(2,4)",foo(2,4)))).
+assert(kb_clause(rules_changed)).
+assert(kb_clause(rule("foo(2,4)",foo(2,4)))).
+assert(kb_clause(rules_changed)).
+assert(kb_clause(rule("foo(2,4)",foo(2,4)))).
+assert(kb_clause(rules_changed)).
+assert(kb_clause(rule("foo(2,4)",foo(2,4)))).
+assert(kb_clause(rules_changed)).
+assert(kb_clause(rule("foo(2,4)",foo(2,4)))).
+assert(kb_clause(rules_changed)).
+assert(kb_clause(rule("foo(2,4)",foo(2,4)))).
+assert(kb_clause(rules_changed)).
+assert(kb_clause(rule("foo(2,4)",foo(2,4)))).
+assert(kb_clause(rules_changed)).
